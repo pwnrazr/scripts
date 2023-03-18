@@ -6,6 +6,7 @@ threads=""
 CUSTOM_NAME=""
 BUILD_SIGNED=false # build unsigned by default for now
 BUILD_DYNAMIC=""
+BUILD_TYPE=""
 
 # Colors
 NC='\033[0m'
@@ -135,6 +136,7 @@ recovery_img=out/target/product/raphael/obj/PACKAGING/target_files_intermediates
 if [ "$BUILD_SIGNED" = true ]; then
   if [ -e .android-certs/releasekey.x509.pem ]; then
     print "${LRD}This build will be signed"
+    BUILD_TYPE+="-signed"
   else
     print "${RED}BUILD_SIGNED is set but releasekey does not exist in .android-certs!"
     exit
@@ -145,6 +147,7 @@ else
     exit
   else
     print "${LRD}This build will be unsigned"
+    BUILD_TYPE+="-unsigned"
   fi
 fi
 
@@ -159,8 +162,10 @@ fi
 
 if [ "$KERNEL_DYNAMIC_PARTITIONS" != "" ]; then
   KERNEL_DYNAMIC_PARTITIONS=true
+  BUILD_TYPE+="-dynamic"
 else
   KERNEL_DYNAMIC_PARTITIONS=false
+  BUILD_TYPE+="-non_dynamic"
 fi
 
 if [ "$DEVICE_DYNAMIC_PARTITIONS" = "$KERNEL_DYNAMIC_PARTITIONS" ]; then
@@ -180,7 +185,7 @@ lunch yaap_raphael-user && m yaap ${threads}
 if [ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]; then
 
     original_filename=$(basename out/target/product/raphael/YAAP-*.zip)
-    new_filename="${original_filename%%.zip}${CUSTOM_NAME}.zip"
+    new_filename="${original_filename%%.zip}${CUSTOM_NAME}${BUILD_TYPE}.zip"
 
     current_build_dir="$builds_directory${new_filename%%.zip}/"
     mkdir "$current_build_dir"
