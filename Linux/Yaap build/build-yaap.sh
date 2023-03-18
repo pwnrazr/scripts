@@ -4,6 +4,17 @@ cd ${PWD}
 
 threads=""
 CUSTOM_NAME=""
+BUILD_SIGNED=false # build unsigned by default for now
+
+function cleanup()
+{
+  rm .android-certs # This should be a symbolic link NOT the actual folder
+}
+
+function setup_signed()
+{
+  ln -s ~/.android-certs .android-certs
+}
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -26,6 +37,11 @@ while [[ $# -gt 0 ]]; do
       CUSTOM_NAME="-$2"
       echo "Custom name: $CUSTOM_NAME"
       shift 2
+      ;;
+    --sign)
+      BUILD_SIGNED=true
+      setup_signed
+      shift 1
       ;;
     *)
       echo "Invalid option: $key"
@@ -66,10 +82,20 @@ super_empty_img="out/target/product/raphael/obj/PACKAGING/target_files_intermedi
 recovery_img=out/target/product/raphael/obj/PACKAGING/target_files_intermediates/yaap_raphael-target_files-eng.pwnrazr/IMAGES/recovery.img
 
 # sanity checks
-if [ -e .android-certs/releasekey.x509.pem ]; then
-  print "${LRD}This build will be signed"
+if [ "$BUILD_SIGNED" = true ]; then
+  if [ -e .android-certs/releasekey.x509.pem ]; then
+    print "${LRD}This build will be signed"
+  else
+    print "${RED}BUILD_SIGNED is set but releasekey does not exist in .android-certs!"
+    exit
+  fi
 else
-  print "${LRD}This build will be unsigned"
+  if [ -e .android-certs/releasekey.x509.pem ]; then
+    print "${RED}BUILD_SIGNED is unset but releasekey exists in .android-certs!"
+    exit
+  else
+    print "${LRD}This build will be unsigned"
+  fi
 fi
 
 DEVICE_DYNAMIC_PARTITIONS=$(grep BOARD_SUPER_PARTITION_GROUPS device/xiaomi/raphael/BoardConfig.mk)
@@ -137,3 +163,5 @@ if [ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]; then
 else
     print "${RED}Build failed! YAAP-.zip not found"
 fi
+
+cleanup
