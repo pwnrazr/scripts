@@ -22,7 +22,9 @@ function print()
 
 function cleanup()
 {
-  rm .android-certs # This should be a symbolic link NOT the actual folder
+  if [ "$BUILD_SIGNED" = true ]; then
+    rm .android-certs # This should be a symbolic link NOT the actual folder
+  fi
 
   if [ -e ".repo/local_manifests/yaap_manifest.xml-bak" ]; then
     print "${CYN}Restoring previous yaap_manifest.xml"
