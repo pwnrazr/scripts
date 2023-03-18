@@ -65,6 +65,37 @@ builds_directory="/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom/builds/"
 super_empty_img="out/target/product/raphael/obj/PACKAGING/target_files_intermediates/yaap_raphael-target_files-eng.pwnrazr/IMAGES/super_empty.img"
 recovery_img=out/target/product/raphael/obj/PACKAGING/target_files_intermediates/yaap_raphael-target_files-eng.pwnrazr/IMAGES/recovery.img
 
+# sanity checks
+if [ -d ".android-certs" ]; then
+  print "${LRD}This build will be signed"
+else
+  print "${LRD}This build will be unsigned"
+fi
+
+DEVICE_DYNAMIC_PARTITIONS=$(grep BOARD_SUPER_PARTITION_GROUPS device/xiaomi/raphael/BoardConfig.mk)
+KERNEL_DYNAMIC_PARTITIONS=$(grep CONFIG_INITRAMFS_IGNORE_SKIP_FLAG=y kernel/xiaomi/sm8150/arch/arm64/configs/raphael_defconfig)
+
+if [ "$DEVICE_DYNAMIC_PARTITIONS" != "" ]; then
+  DEVICE_DYNAMIC_PARTITIONS=true
+else
+  DEVICE_DYNAMIC_PARTITIONS=false
+fi
+
+if [ "$KERNEL_DYNAMIC_PARTITIONS" != "" ]; then
+  KERNEL_DYNAMIC_PARTITIONS=true
+else
+  KERNEL_DYNAMIC_PARTITIONS=false
+fi
+
+if [ "$DEVICE_DYNAMIC_PARTITIONS" = "$KERNEL_DYNAMIC_PARTITIONS" ]; then
+  print "${LGR}Device and kernel tree match. Dynamic Partitions = $DEVICE_DYNAMIC_PARTITIONS"
+else
+  print "${RED}Device and kernel tree mismatch!"
+  print "${RED}DEVICE_DYNAMIC_PARTITIONS = $DEVICE_DYNAMIC_PARTITIONS"
+  print "${RED}KERNEL_DYNAMIC_PARTITIONS = $KERNEL_DYNAMIC_PARTITIONS"
+  exit
+fi
+
 source build/envsetup.sh
 
 print "${LGR}Time to build!"
