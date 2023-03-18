@@ -56,6 +56,27 @@ function sync_build_type()
   repo sync -q device/xiaomi/raphael/ kernel/xiaomi/sm8150/
 }
 
+function check_otacert()
+{
+  signed_otacert="/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom/otacerts/otacert-signed"
+  unsigned_otacert="/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom/otacerts/otacert-unsigned"
+  current_build_otacert="$current_build_dir"original-META-INF/META-INF/com/android/otacert
+
+  if [[ "$BUILD_SIGNED" = true ]]; then
+    if cmp -s "$signed_otacert" "$current_build_otacert"; then
+      print "${LGR}Current build otacert matches signed otacert"
+    else
+      print "${RED}Current build otacert doesn't match signed otacert!"
+    fi
+  else
+    if cmp -s "$unsigned_otacert" "$current_build_otacert"; then
+      print "${LGR}Current build otacert matches unsigned otacert"
+    else
+      print "${RED}Current build otacert doesn't match unsigned otacert!"
+    fi
+  fi
+}
+
 while [[ $# -gt 0 ]]; do
   key="$1"
 
@@ -219,4 +240,5 @@ else
     print "${RED}Build failed! YAAP-.zip not found"
 fi
 
+check_otacert
 cleanup
