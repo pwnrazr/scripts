@@ -66,7 +66,7 @@ super_empty_img="out/target/product/raphael/obj/PACKAGING/target_files_intermedi
 recovery_img=out/target/product/raphael/obj/PACKAGING/target_files_intermediates/yaap_raphael-target_files-eng.pwnrazr/IMAGES/recovery.img
 
 # sanity checks
-if [ -d ".android-certs" ]; then
+if [ -e .android-certs/releasekey.x509.pem ]; then
   print "${LRD}This build will be signed"
 else
   print "${LRD}This build will be unsigned"
