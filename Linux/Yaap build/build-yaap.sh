@@ -2,6 +2,8 @@
 
 cd ${PWD}
 
+START=$(date +%s)
+
 threads=""
 CUSTOM_NAME=""
 BUILD_SIGNED=false # build unsigned by default for now
@@ -19,6 +21,17 @@ CYN='\033[1;36m'
 function print()
 {
 	echo -e ${1} "\r${2}${NC}"
+}
+
+# Formats the time for the end
+function format_time()
+{
+	MINS=$(((${2} - ${1}) / 60))
+	SECS=$(((${2} - ${1}) % 60))
+
+	TIME_STRING+="${MINS}:${SECS}"
+
+	echo "${TIME_STRING}"
 }
 
 function cleanup()
@@ -242,3 +255,4 @@ fi
 
 check_otacert
 cleanup
+print ${LGR} "Time from run to finish: $(format_time "${START}" "$(date +%s)")!"
