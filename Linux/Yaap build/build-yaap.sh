@@ -23,11 +23,11 @@ function print()
 
 function cleanup()
 {
-  if [ "$BUILD_SIGNED" = true ]; then
+  if [[ "$BUILD_SIGNED" = true ]]; then
     rm .android-certs # This should be a symbolic link NOT the actual folder
   fi
 
-  if [ -e ".repo/local_manifests/yaap_manifest.xml-bak" ]; then
+  if [[ -e ".repo/local_manifests/yaap_manifest.xml-bak" ]]; then
     print "${CYN}Restoring previous yaap_manifest.xml"
     mv .repo/local_manifests/yaap_manifest.xml-bak .repo/local_manifests/yaap_manifest.xml
   fi
@@ -40,14 +40,14 @@ function setup_signed()
 
 function sync_build_type()
 {
-  if [ -e ".repo/local_manifests/yaap_manifest.xml" ]; then
+  if [[ -e ".repo/local_manifests/yaap_manifest.xml" ]]; then
     mv .repo/local_manifests/yaap_manifest.xml .repo/local_manifests/yaap_manifest.xml-bak
   fi
 
-  if [ "$BUILD_DYNAMIC" = true ]; then
+  if [[ "$BUILD_DYNAMIC" = true ]]; then
     print "${CYN}Getting dynamic partitions yaap_manifest.xml"
     wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen-dynamic-partitions/yaap_manifest.xml -P .repo/local_manifests/
-  elif [ "$BUILD_DYNAMIC" = false ]; then
+  elif [[ "$BUILD_DYNAMIC" = false ]]; then
     print "${CYN}Getting non dynamic partitions yaap_manifest.xml"
     wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen/yaap_manifest.xml -P .repo/local_manifests/
   fi
@@ -84,7 +84,7 @@ while [[ $# -gt 0 ]]; do
       shift 1
       ;;
     --dynamic)
-      if [ -z "$BUILD_DYNAMIC" ]; then
+      if [[ -z "$BUILD_DYNAMIC" ]]; then
         BUILD_DYNAMIC=true
       else
         print "${RED}Both --dynamic and --non-dynamic flags set!"
@@ -93,7 +93,7 @@ while [[ $# -gt 0 ]]; do
       shift 1
       ;;
     --non-dynamic)
-      if [ -z "$BUILD_DYNAMIC" ]; then
+      if [[ -z "$BUILD_DYNAMIC" ]]; then
         BUILD_DYNAMIC=false
       else
         print "${RED}Both --dynamic and --non-dynamic flags set!"
@@ -108,7 +108,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ "$BUILD_DYNAMIC" != "" ]; then
+if [[ "$BUILD_DYNAMIC" != "" ]]; then
   sync_build_type
 else
   print "${YEL}Building current"
@@ -134,7 +134,7 @@ recovery_img=out/target/product/raphael/obj/PACKAGING/target_files_intermediates
 
 # sanity checks
 if [ "$BUILD_SIGNED" = true ]; then
-  if [ -e .android-certs/releasekey.x509.pem ]; then
+  if [[ -e .android-certs/releasekey.x509.pem ]]; then
     print "${LRD}This build will be signed"
     BUILD_TYPE+="-signed"
   else
@@ -142,7 +142,7 @@ if [ "$BUILD_SIGNED" = true ]; then
     exit
   fi
 else
-  if [ -e .android-certs/releasekey.x509.pem ]; then
+  if [[ -e .android-certs/releasekey.x509.pem ]]; then
     print "${RED}BUILD_SIGNED is unset but releasekey exists in .android-certs!"
     exit
   else
@@ -154,13 +154,13 @@ fi
 DEVICE_DYNAMIC_PARTITIONS=$(grep BOARD_SUPER_PARTITION_GROUPS device/xiaomi/raphael/BoardConfig.mk)
 KERNEL_DYNAMIC_PARTITIONS=$(grep CONFIG_INITRAMFS_IGNORE_SKIP_FLAG=y kernel/xiaomi/sm8150/arch/arm64/configs/raphael_defconfig)
 
-if [ "$DEVICE_DYNAMIC_PARTITIONS" != "" ]; then
+if [[ "$DEVICE_DYNAMIC_PARTITIONS" != "" ]]; then
   DEVICE_DYNAMIC_PARTITIONS=true
 else
   DEVICE_DYNAMIC_PARTITIONS=false
 fi
 
-if [ "$KERNEL_DYNAMIC_PARTITIONS" != "" ]; then
+if [[ "$KERNEL_DYNAMIC_PARTITIONS" != "" ]]; then
   KERNEL_DYNAMIC_PARTITIONS=true
   BUILD_TYPE+="-dynamic"
 else
@@ -168,7 +168,7 @@ else
   BUILD_TYPE+="-non_dynamic"
 fi
 
-if [ "$DEVICE_DYNAMIC_PARTITIONS" = "$KERNEL_DYNAMIC_PARTITIONS" ]; then
+if [[ "$DEVICE_DYNAMIC_PARTITIONS" = "$KERNEL_DYNAMIC_PARTITIONS" ]]; then
   print "${LGR}Device and kernel tree match. Dynamic Partitions = $DEVICE_DYNAMIC_PARTITIONS"
 else
   print "${RED}Device and kernel tree mismatch!"
@@ -182,7 +182,7 @@ source build/envsetup.sh
 print "${LGR}Time to build!"
 lunch yaap_raphael-user && m yaap ${threads}
 
-if [ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]; then
+if [[ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]]; then
 
     original_filename=$(basename out/target/product/raphael/YAAP-*.zip)
     new_filename="${original_filename%%.zip}${CUSTOM_NAME}${BUILD_TYPE}.zip"
@@ -194,7 +194,7 @@ if [ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]; then
     mv out/target/product/raphael/YAAP-*.zip.sha256sum "$current_build_dir"
     cp "$recovery_img" "$current_build_dir"
  
-    if [ -e "$super_empty_img" ]; then
+    if [[ -e "$super_empty_img" ]]; then
       print "${YEL}Copying super_empty.img"
       cp "$super_empty_img" "$current_build_dir"
     else
