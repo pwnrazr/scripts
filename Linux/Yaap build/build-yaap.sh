@@ -248,11 +248,11 @@ if [[ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]]; then
     print "${CYN}Moving YAAP zip to $current_build_dir"
     mv YAAP-*.zip "$current_build_dir"
 
+    check_otacert
     print "${LGR}Build finished"
 else
     print "${RED}Build failed! YAAP-.zip not found"
 fi
 
-check_otacert
 cleanup
 print ${LGR} "Time from run to finish: $(format_time "${START}" "$(date +%s)")!"
