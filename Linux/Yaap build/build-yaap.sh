@@ -9,6 +9,7 @@ CUSTOM_NAME=""
 BUILD_SIGNED=false # build unsigned by default for now
 BUILD_DYNAMIC=""
 BUILD_TYPE=""
+BUILD_GAPPS=true # Gapps build by default
 
 # Colors
 NC='\033[0m'
@@ -135,6 +136,10 @@ while [[ $# -gt 0 ]]; do
       fi
       shift 1
       ;;
+    --vanilla)
+      BUILD_GAPPS=false
+      shift 1
+      ;;
     *)
       echo "Invalid option: $key"
       exit 1
@@ -157,8 +162,6 @@ export USE_THINLTO_CACHE=true
 export THINLTO_CACHE_DIR=/home/pwnrazr/dev-stuff/yaap-thinlto-cache
 
 #export GLOBAL_THINLTO=true
-
-export TARGET_BUILD_GAPPS=true
 
 staging_directory="/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom/builds/staging/"
 builds_directory="/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom/builds/"
@@ -209,6 +212,15 @@ else
   print "${RED}DEVICE_DYNAMIC_PARTITIONS = $DEVICE_DYNAMIC_PARTITIONS"
   print "${RED}KERNEL_DYNAMIC_PARTITIONS = $KERNEL_DYNAMIC_PARTITIONS"
   exit
+fi
+
+if [[ "$BUILD_GAPPS" = true ]]; then
+  print "${YEL}GAPPS Build"
+  BUILD_TYPE+="-GAPPS"
+  export TARGET_BUILD_GAPPS=true
+else
+  print "${YEL}Vanilla Build"
+  BUILD_TYPE+="-VANILLA"
 fi
 
 source build/envsetup.sh
