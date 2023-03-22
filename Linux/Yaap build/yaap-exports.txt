@@ -1,4 +1,4 @@
-export THINLTO_CACHE_DIR=/home/pwnrazr/dev-stuff/yaap-thinlto-cache;export USE_THINLTO_CACHE=true;export USE_CCACHE=true; export TARGET_BUILD_GAPPS=true; source build/envsetup.sh; lunch yaap_raphael-user && m yaap
+export THINLTO_CACHE_DIR=/home/pwnrazr/dev-stuff/yaap-thinlto-cache;export USE_THINLTO_CACHE=true;export USE_CCACHE=true;export CCACHE_EXEC=/usr/bin/ccache; export TARGET_BUILD_GAPPS=true; source build/envsetup.sh; lunch yaap_raphael-user && m yaap
 
 "/mnt/e/raphael_dev/YAAP custom/"
 "/mnt/c/Users/AmirA/OneDrive/Documents/YAAP custom"

@@ -156,6 +156,7 @@ fi
 #echo current dir: ${PWD}
 
 export USE_CCACHE=true
+export CCACHE_EXEC=/usr/bin/ccache
 export CCACHE_DIR=/home/pwnrazr/dev-stuff/yaap-ccache
 
 export USE_THINLTO_CACHE=true
