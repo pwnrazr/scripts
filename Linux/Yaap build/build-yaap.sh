@@ -221,6 +221,7 @@ if [[ "$BUILD_GAPPS" = true ]]; then
 else
   print "${YEL}Vanilla Build"
   BUILD_TYPE+="-VANILLA"
+  export TARGET_BUILD_GAPPS=false
 fi
 
 source build/envsetup.sh
