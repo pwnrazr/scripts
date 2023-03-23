@@ -69,6 +69,14 @@ function sync_build_type()
 
   print "${CYN}Synchronizing device and kernel tree"
   repo sync -q device/xiaomi/raphael/ kernel/xiaomi/sm8150/
+
+  print "${YEL}Deleting system_ext product odm from out/target/product/raphael"
+  for PARTITIONS in "system_ext" "product" "odm"; do
+      for j in $(find out/target/product/raphael -name $PARTITIONS); do
+          rm "$j" >> /dev/null;
+          rm -r "$j" >> /dev/null
+      done;
+  done
 }
 
 function check_otacert()
