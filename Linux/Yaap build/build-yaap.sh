@@ -42,9 +42,9 @@ function cleanup()
     rm "$YAAP_DIR/.android-certs" # This should be a symbolic link NOT the actual folder
   fi
 
-  if [[ -e ".repo/local_manifests/yaap_manifest.xml-bak" ]]; then
+  if [[ -e "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml-bak" ]]; then
     print "${CYN}Restoring previous yaap_manifest.xml"
-    mv .repo/local_manifests/yaap_manifest.xml-bak .repo/local_manifests/yaap_manifest.xml
+    mv "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml-bak" "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml"
   fi
 }
 
@@ -55,16 +55,16 @@ function setup_signed()
 
 function sync_build_type()
 {
-  if [[ -e ".repo/local_manifests/yaap_manifest.xml" ]]; then
-    mv .repo/local_manifests/yaap_manifest.xml .repo/local_manifests/yaap_manifest.xml-bak
+  if [[ -e "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml" ]]; then
+    mv "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml" "$YAAP_DIR/.repo/local_manifests/yaap_manifest.xml-bak"
   fi
 
   if [[ "$BUILD_DYNAMIC" = true ]]; then
     print "${CYN}Getting dynamic partitions yaap_manifest.xml"
-    wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen-dynamic-partitions/yaap_manifest.xml -P .repo/local_manifests/
+    wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen-dynamic-partitions/yaap_manifest.xml -P "$YAAP_DIR/.repo/local_manifests/"
   elif [[ "$BUILD_DYNAMIC" = false ]]; then
     print "${CYN}Getting non dynamic partitions yaap_manifest.xml"
-    wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen/yaap_manifest.xml -P .repo/local_manifests/
+    wget -q https://raw.githubusercontent.com/pwnrazr/device_xiaomi_raphael/thirteen/yaap_manifest.xml -P "$YAAP_DIR/.repo/local_manifests/"
   fi
 
   print "${CYN}Synchronizing device and kernel tree"
