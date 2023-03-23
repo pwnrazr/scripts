@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd ${PWD}
+YAAP_DIR=${PWD}
+cd "$YAAP_DIR"
 
 START=$(date +%s)
 
@@ -38,7 +39,7 @@ function format_time()
 function cleanup()
 {
   if [[ "$BUILD_SIGNED" = true ]]; then
-    rm .android-certs # This should be a symbolic link NOT the actual folder
+    rm "$YAAP_DIR/.android-certs" # This should be a symbolic link NOT the actual folder
   fi
 
   if [[ -e ".repo/local_manifests/yaap_manifest.xml-bak" ]]; then
@@ -49,7 +50,7 @@ function cleanup()
 
 function setup_signed()
 {
-  ln -s ~/.android-certs .android-certs
+  ln -s ~/.android-certs "$YAAP_DIR/.android-certs"
 }
 
 function sync_build_type()
