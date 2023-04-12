@@ -271,6 +271,9 @@ if [[ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]]; then
     print "${CYN}Moving YAAP zip to $current_build_dir"
     mv YAAP-*.zip "$current_build_dir"
 
+    print "${CYN}Generating new sha256sum"
+    sha256sum "$current_build_dir"/*.zip | awk '{print $1}' > "$current_build_dir"/*sha256sum
+
     check_otacert
     print "${LGR}Build finished"
 else
