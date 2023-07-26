@@ -1,6 +1,6 @@
 $vhdx = @(
-	[pscustomobject]@{path="D:\wsl\yaap.vhdx";mounted="false";num="";drv=""}
-	[pscustomobject]@{path="C:\wsl\dev_stuff.vhdx";mounted="false";num="";drv=""}
+	[pscustomobject]@{path="G:\wsl\yaap.vhdx";mounted="false";num="";drv=""}
+	[pscustomobject]@{path="D:\wsl\dev_stuff.vhdx";mounted="false";num="";drv=""}
 )
 
 get-disk | ForEach-Object {
