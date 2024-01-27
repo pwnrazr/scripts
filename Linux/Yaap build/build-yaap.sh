@@ -250,7 +250,7 @@ if [[ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]]; then
     print "${CYN}Copying sha256sum and recovery.img"
     mv out/target/product/raphael/YAAP-*.zip.sha256sum "$current_build_dir"
     cp "$recovery_img" "$current_build_dir"
- 
+
     if [[ -e "$super_empty_img" ]]; then
       print "${YEL}Copying super_empty.img"
       cp "$super_empty_img" "$current_build_dir"
@@ -258,21 +258,8 @@ if [[ -n "$(find out/target/product/raphael -name 'YAAP-*.zip')" ]]; then
       print "${YEL}Not a dynamic partitions build, super_empty.img not found"
     fi
 
-    print "${CYN}Moving $new_filename to staging"
-    mv out/target/product/raphael/YAAP-*.zip "$staging_directory${new_filename}"
-    cd "$staging_directory"
-
-    print "${CYN}Backing up original META-INF"
-    7z x YAAP-*.zip -o"$current_build_dir"original-META-INF META-INF > /dev/null
-
-    print "${CYN}Zipping old update-binary into ${new_filename}"
-    7z a YAAP-*.zip META-INF > /dev/null
-
-    print "${CYN}Moving YAAP zip to $current_build_dir"
-    mv YAAP-*.zip "$current_build_dir"
-
-    print "${CYN}Generating new sha256sum"
-    sha256sum "$current_build_dir"/*.zip | awk '{print $1}' > "$current_build_dir"/*sha256sum
+    print "${CYN}Moving $new_filename to $current_build_dir"
+    mv out/target/product/raphael/YAAP-*.zip "$current_build_dir${new_filename}"
 
     check_otacert
     print "${LGR}Build finished"
